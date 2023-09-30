@@ -41,7 +41,6 @@ def get_activity(d):
 if __name__ == "__main__":
     if os.getenv("DATE") is not None and os.getenv("WEBHOOK_URL") is not None:
         d = datetime.datetime.strptime(os.getenv("DATE"), "%Y-%m-%d").date()
-        print(get_activity(d))
         # Send to Discord channel by Webhook
         webhook_url = os.getenv("WEBHOOK_URL")
         requests.post(webhook_url, json={
