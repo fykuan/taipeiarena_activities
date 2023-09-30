@@ -41,26 +41,30 @@ def get_activity(d):
 if __name__ == "__main__":
     if os.getenv("DATE") is not None and os.getenv("WEBHOOK_URL") is not None:
         d = datetime.datetime.strptime(os.getenv("DATE"), "%Y-%m-%d").date()
-        # Send to Discord channel by Webhook
-        webhook_url = os.getenv("WEBHOOK_URL")
-        requests.post(webhook_url, json={
-            "content": f"{d.year}/{d.month}/{d.day} {get_activity(d)['activity']}",
-            "embeds": [
-                {
-                    "title": "明日小巨蛋活動通知",
-                    "color": 15258703,
-                    "fields": [
-                        {
-                            "name": "活動名稱",
-                            "value": get_activity(d)['activity']
-                        },
-                        {
-                            "name": "活動日期",
-                            "value": f"{d.year}/{d.month}/{d.day}"
-                        }
-                    ]
-                }
-            ]
-        })
+
+        act = get_activity(d)
+
+        if act['activity'] != "已承租" and act['activity'] != "未開放":
+            # Send to Discord channel by Webhook
+            webhook_url = os.getenv("WEBHOOK_URL")
+            requests.post(webhook_url, json={
+                "content": f"{d.year}/{d.month}/{d.day} {act['activity']}",
+                "embeds": [
+                    {
+                        "title": "明日小巨蛋活動通知",
+                        "color": 15258703,
+                        "fields": [
+                            {
+                                "name": "活動名稱",
+                                "value": act['activity']
+                            },
+                            {
+                                "name": "活動日期",
+                                "value": f"{d.year}/{d.month}/{d.day}"
+                            }
+                        ]
+                    }
+                ]
+            })
     else:
         print("Please pass DATE and WEBHOOK_URL env variable.")
